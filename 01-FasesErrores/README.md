@@ -36,31 +36,43 @@
    int i=42
 
 7) #### Comando ejecutado: gcc -std=c11 hello4.c -S -o hello4.S
+   Resultado: Arroja un warning por la declaracion implicita de la funcion prontf.
    ```bash
        hello4.c: In function ‘main’:
 	   hello4.c:10:2: warning: implicit declaration of function ‘prontf’; did you mean ‘printf’? [-Wimplicit-function-declaration]
   	   prontf("La respuesta es %d\n");
   	   ^~~~~~
   	   printf
-   Resultado luego de cambiar pront por print:
-       hello4.c: In function ‘main’:
-	   hello4.c:10:27: warning: format ‘%d’ expects a matching ‘int’ argument [-Wformat=]
-       printf("La respuesta es %d\n");
                                ~^
 
 8) En el hello4.s se ve el codigo assembler generado como resultado a lo ejecutado en el punto anterior.
 
-9) Comando ejecutado: *gcc -std=c11 hello4.S -c -o hello4.o
+9) #### Comando ejecutado: *gcc -std=c11 hello4.S -c -o hello4.o
    hello4.o* contiene el binario generado.
 
-10) Comando ejecutado: *gcc -std=c11 -o hello4 hello4.c  -L /usr/include/stdlib.h*
-	Resultado: No hubo errores.
+10) #### Comando ejecutado: gcc -std=c11 hello4.o -o hello4 -L /usr/include/stdlib.h
+	Resultado: Error, el linker no pudo encontrar ninguna referencia a prontf en stdlib.
+	```bash
+	hello4.o: En la función main':
+	hello4.c:(.text+0x1a): referencia a `prontf' sin definir
+	collect2: error: ld returned 1 exit status
 
-11, 12, 13) No hubo errores, asi que salteo estos puntos.
+11) #### Comando ejecutado: gcc -std=c11 hello5.c -o hello5
+	Resultado: Al generar un ejecutable tira un warning por la referencia que se hace al digito dentro de printf.
+	```bash
+	hello5.c: In function ‘main’:
+	hello5.c:11:30: warning: format ‘%d’ expects a matching ‘int’ argument [-Wformat=]
+    printf("La respuesta es %d\n");
+
+
+12) Resultado: Cuando se ejecuta hello5 se esperaria que se muestre por pantalla "La respuesta es 42", pero al no pasarle por parametro a la funcion printf el digido %d, esta imprime valores extraños.
+
+13) Resultado: Luego de corregir el error que se producía en el punto anterior, ahora la salida por patalla muestra el resultado que se esperaba: "La respuesta es 42"
 
 15) #### Comando ejecutado: gcc -std=c11 -o hello7 hello7.c
+	Resultado: Esto funciona porque el compilador siempre linkea con la libreria de C, donde esta definida printf.
 	
-  ```bash
+  	```bash
 	hello7.c: In function ‘main’:
 	hello7.c:9:2: warning: implicit declaration of function ‘printf’ [-Wimplicit-function-declaration]
 	  printf("La respuesta es %d\n", i);
